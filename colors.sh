@@ -1,8 +1,39 @@
-# Source: https://github.com/cimourdain/bash_scripts
-# references used: 
-# https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
-# https://unix.stackexchange.com/questions/560974/why-my-colors-doesnt-show-in-all-terminals
-# https://askubuntu.com/questions/558280/changing-colour-of-text-and-background-of-terminal
+#!/bin/bash
+
+#####################################################################
+##
+## title: Bash Coloring script
+##
+## description: Simple bash coloring script (foreground, background and styles)
+##
+## Usage:
+##   basic usage:
+##     color "<message>" "<style1> <style2> etc."
+##    styles can be:
+##       - fg-<color> to set the foregreound color
+##       - bg-<color> to set the backgound color
+##       - any element from the styles list below
+##    Reference:
+##      Colors: black, red, green, yellow, blue, purple, cyan, white
+##      styles: normal, bold, low_intensity, underline, blink, reverse, invisible
+##
+##    Rendering note: by default the `color` function use tput if available on system. If not the bash escaping character \e is used.
+##      - use `--bash` to force using \e escaping character
+##      - use `--oct` to force using \033 escaping character
+##      - use `--hex` to force using \x1b escaping character
+##
+##
+## Source: https://github.com/cimourdain/bash_scripts
+##
+## references used: 
+##   - https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
+##   - https://unix.stackexchange.com/questions/560974/why-my-colors-doesnt-show-in-all-terminals
+##   - https://askubuntu.com/questions/558280/changing-colour-of-text-and-background-of-terminal
+##
+## license: MIT
+##
+#####################################################################
+
 
 
 declare -A __COLORS_CLASSIC_ESCAPE_CHAR=([BASH]="\e" [OCT]="\033" [HEX]="\x1b")

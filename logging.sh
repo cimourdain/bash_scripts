@@ -1,5 +1,40 @@
 #!/bin/bash
 
+#####################################################################
+##
+## title: Bash Logging script
+##
+## description: Simple bash logging with formatting options (colors, prefix, current path, markdown rendering etc.)
+##
+## Usage:
+##   basic usage:
+##    log <level>[<sublevel>] <message>
+##    levels can be:
+##      - full text: critical, error, warning, info, debug, verbose
+##      - short: c, e, w, i, d, v
+##      - number: 5, 4, 3, 2, 1, 0
+##    sublevels optionally be contatenated to level:
+##      - 1: markdown heading 1 (=prepend #)
+##      - 2: markdown heading 1 (=prepend ##)
+##      - 3: markdown heading 1 (=prepend ###)
+##      - 4: markdown heading 1 (=prepend ####)
+##      - 5: markdown heading 1 (=prepend #####)
+##      - 6: unordered list idem (=prepend \t -)
+##      - 7: unordered list idem (=prepend \t %n)
+##    Setting log level:
+##       by env var : LOG_LEVEL=<level>
+##       explicitly in code: log_level <level>
+##    Setting log prefix:
+##       by env var : LOG_PREFIX=<0/1>
+##       explicitly in code: log_prefix <0/1>
+##  Other provided functions:
+##      log_on: enable logging
+##      log_off: completely disable logging
+##
+## license: MIT
+##
+#####################################################################
+
 ##################
 # GLOBAL VARS
 ##################
