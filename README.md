@@ -3,11 +3,11 @@ The purpose of this repository is to store useful bash scripts.
 
 
 # Features
-- Logging
 - Terminal colors
+- Logging (using above coloring script)
+
 
 # Roadmap
-- Use coloring script in logging
 - Add a tesing utils script
 
 # Colors

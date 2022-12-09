@@ -35,6 +35,8 @@
 ##
 #####################################################################
 
+source ./colors.sh
+
 ##################
 # GLOBAL VARS
 ##################
@@ -45,7 +47,8 @@ if [ -z "${LOGGER_STATE+x}" ]; then
     LOGGER_STATE[$key]=${DEFAULT_LOGGER_STATE[$key]}
   done
 fi
-declare -A LOG_COLORS=([5]="\e[41m" [4]="\e[91m" [3]="\e[0;93m" [2]="\e[0;34m" [1]="\e[0;36m" [0]="\e[0;37m" )
+
+declare -A LOG_COLORS=([5]="bg-red" [4]="fg-red" [3]="fg-yellow" [2]="fg-blue" [1]="fg-cyan" [0]="fg-white" )
 
 
 ##################
@@ -143,54 +146,47 @@ function __format_log() {
   log_level_subidx="${3}"
   prefix="${4}"
 
-  color_start="${LOG_COLORS[${log_level_idx}]}"
-  color_end="$(echo -en "\e[00m")"
-  prefix="$(echo -en "${color_start}")${prefix}"
-
-  # echo "log level: ${log_level_idx}-${log_level_subidx}} => ${prefix}"
+  local colored="${prefix}${message}"
   case "${log_level_subidx}" in
       1)
-        message="# ${message}"
-        __print_log_line "${prefix}${message}${color_end}"
+        colored=$(color "${prefix}#${message}" "${LOG_COLORS[${log_level_idx}]}")
         ;;
       2)
-        message="## ${message}"
-        __print_log_line "${prefix}${message}${color_end}"
+        colored=$(color "${prefix}##${message}" "${LOG_COLORS[${log_level_idx}]}")
         ;;
       3)
-        message="### ${message}"
-        __print_log_line "${prefix}${message}${color_end}"
+        colored=$(color "${prefix}###${message}" "${LOG_COLORS[${log_level_idx}]}")
         ;;
       4)
-        message="##### ${message}"
-        __print_log_line "${prefix}${message}${color_end}"
+        colored=$(color "${prefix}####${message}" "${LOG_COLORS[${log_level_idx}]}")
         ;;
       5)
-        message="###### ${message}"
-        __print_log_line "${prefix}${message}${color_end}"
+        colored=$(color "${prefix}####${message}" "${LOG_COLORS[${log_level_idx}]}")
         ;;
       6)
-        __print_log_line "${prefix}" "%s"
+        colored=""
         local message_array=(${message})
         for item in "${message_array[@]}"; do
-            __print_log_line "${item}" "\t- %s\n"
+            local item_str="$(echo -en $(color "\n\t-${prefix}${item}" "${LOG_COLORS[${log_level_idx}]}"))"
+            colored="${colored}${item_str}"
         done
-        __print_log_line "${color_end}"
         ;;
       7)
-        __print_log_line "${prefix}" "%s"
+        colored=""
         local message_array=(${message})
-        local i=0
+        local i=1
         for item in "${message_array[@]}"; do
-            __print_log_line "${i}.${item}" "\t%s\n"
+            local item_str="$(echo -en $(color "\n\t${i}.${prefix}${item}" "${LOG_COLORS[${log_level_idx}]}"))"
+            colored="${colored}${item_str}"
             i=$((i+1))
         done
-        __print_log_line "${color_end}"
         ;;
       *)
-        __print_log_line "${prefix}${message}${color_end}"
+        colored=$(color "${prefix}${message}" "${LOG_COLORS[${log_level_idx}]}")
+        
       ;;
   esac
+  __print_log_line "${colored}"
 }
 
 ##################
@@ -286,78 +282,80 @@ function log_level_restore() {
 ###################
 ## SAMPLES/TESTS
 ###################
-#echo "Default logging level ${LOGGER_STATE[DEFAULT_LOG_LEVEL]}"
-#echo "Current logging level ${LOGGER_STATE[LOG_LEVEL]}"
-#
-#echo "explicitely set level to verbose (prefer usage of env variable LOG_LEVEL to apply on all your script)"
-#LOGGER_STATE[LOG_LEVEL]=verbose
-## Basic usage
-### using full text log level name
-#log verbose "Verbose message"
-#log debug "debug message"
-#log info "Info message"
-#log warning "Warning message"
-#log error "Error message"
-#log critical "Critical message"
-#
-### using abbreviated text level name
-#log v "Function Verbose message"
-#log d "Function debug message"
-#log i "Function Info message"
-#log w "Function Warning message"
-#log e "Function Error message"
-#log c "Function Critical message"
-#
-### Using level index
-#log 0 "Nested Verbose message"
-#log 1 "Nested debug message"
-#log 2 "Nested Info message"
-#log 3 "Nested Warning message"
-#log 4 "Nested Error message"
-#log 5 "Nested Critical message"
-#
-## Setting log level (default log level is INFO)
-### Using in functions (to test functions trail)
-#echo "WARNING logging for the following section"
-#log_level warning  # set logging to warning for the following commands
-#log verbose "Verbose message"
-#log debug "debug message"
-#log info "Info message"
-#log warning "Warning message"
-#log error "Error message"
-#log critical "Critical message"
-#echo "reset to global level"
-#log_on  # reset logging to previous level
-#
-### Disable completely
-#echo "No logging for the following section"
-#log_off # disable all logging for the following section
-#log verbose "Verbose message"
-#log debug "debug message"
-#log info "Info message"
-#log warning "Warning message"
-#log error "Error message"
-#log critical "Critical message"
-#echo "reset logging to global level"
-#log_on  # reset logging to previous level
-#
+# echo "Default logging level ${LOGGER_STATE[DEFAULT_LOG_LEVEL]}"
+# echo "Current logging level ${LOGGER_STATE[LOG_LEVEL]}"
+
+# echo "explicitely set level to verbose (prefer usage of env variable LOG_LEVEL to apply on all your script)"
+# LOGGER_STATE[LOG_LEVEL]=verbose
+# # Basic usage
+# ## using full text log level name
+# log verbose "Verbose message"
+# log debug "debug message"
+# log info "Info message"
+# log warning "Warning message"
+# log error "Error message"
+# log critical "Critical message"
+
+# ## using abbreviated text level name
+# log v "Function Verbose message"
+# log d "Function debug message"
+# log i "Function Info message"
+# log w "Function Warning message"
+# log e "Function Error message"
+# log c "Function Critical message"
+
+# ## Using level index
+# log 0 "Nested Verbose message"
+# log 1 "Nested debug message"
+# log 2 "Nested Info message"
+# log 3 "Nested Warning message"
+# log 4 "Nested Error message"
+# log 5 "Nested Critical message"
+
+# # Setting log level (default log level is INFO)
+# ## Using in functions (to test functions trail)
+# echo "WARNING logging for the following section"
+# log_level warning  # set logging to warning for the following commands
+# log verbose "Verbose message"
+# log debug "debug message"
+# log info "Info message"
+# log warning "Warning message"
+# log error "Error message"
+# log critical "Critical message"
+# echo "reset to global level"
+# log_on  # reset logging to previous level
+
+# ## Disable completely
+# echo "No logging for the following section"
+# log_off # disable all logging for the following section
+# log verbose "Verbose message"
+# log debug "debug message"
+# log info "Info message"
+# log warning "Warning message"
+# log error "Error message"
+# log critical "Critical message"
+# echo "reset logging to global level"
+# log_on  # reset logging to previous level
+
 # # Log Formatting
-#echo "The following section uses a sub index to determine the log formatting"
-### Headers title
-#echo "using full text"
-#log info1 "Header 1 (info1 => info=log level info, 1=header of type 1)"
-#echo "using abbreviated text"
-#log w2 "Header 2  (w2 => w=log level warning, 2=header of type 2)"
-#echo "using index"
-#log 43 "Header 3 (e3 => 4=log level error, 3=header of type 3)"
-#echo "titles goes up to 5"
-#log c5 "Header (c5 => c=log level critical, 1=header of type 5)"
-#
-### Lists
-#echo "sub index of value 6 are un-numbered lists"
-#log info6 "car truck bike"
-#echo "sub index of value 7 are numbered lists"
-#log w7 "keys phone cards"
+# echo "The following section uses a sub index to determine the log formatting"
+# ## Headers title
+# echo "using full text"
+# log info1 "Header 1 (info1 => info=log level info, 1=header of type 1)"
+# echo "using abbreviated text"
+# log w2 "Header 2  (w2 => w=log level warning, 2=header of type 2)"
+# echo "using index"
+# log 43 "Header 3 (e3 => 4=log level error, 3=header of type 3)"
+# echo "titles goes up to 5"
+# log c5 "Header (c5 => c=log level critical, 1=header of type 5)"
+
+# ## Lists
+# log_level info
+# log_prefix 0
+# echo "sub index of value 6 are un-numbered lists"
+# log info6 "car truck bike"
+# echo "sub index of value 7 are numbered lists"
+# log w7 "keys phone cards"
 #
 ## Logs details in prefix
 #echo "activate prefix on logs (prefer usage of env var LOG_PREFIX=1)"
