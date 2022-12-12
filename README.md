@@ -79,15 +79,11 @@ will produce the following result:
 ## Mixing
 
 ```bash
-source colors.sh
+source ./colors.sh
 
-color "normal" "normal"
-color "bold" "bold"
-color "low intensity" "low_intensity"
-color "underline" "underline"
-color "blink (not working)" "blink"
-color "reverse" "reverse"
-color "invisible (not working)" "invisible"
+color "Yellow on blue" "bg-blue fg-yellow"
+color "Bold green" "bold fg-green"
+color "Underline purple on yellow" "underline fg-purple bg-yellow"
 ```
 
 will produce the following result:
