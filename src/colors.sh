@@ -62,8 +62,8 @@ function __color_tput() {
 			fi
 		fi
 
-		if [[ ! ${__colors_tput_styles_ref[$style_str]-abc} = "abc" ]]; then
-			style="${__colors_tput_styles_ref[$style_str]}"
+		if [[ ! "${__colors_tput_styles_ref["${style_str}"]}-abc" = "abc" ]]; then
+			style="${__colors_tput_styles_ref["${style_str}"]}"
 		fi
 
 		if [[ $style_str == FG-* ]]; then
